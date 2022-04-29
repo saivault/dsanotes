@@ -11,10 +11,10 @@
 <li><a href="#cache" style="text-decoration:none">Caching</a></li>
 <li><a href="#proxy" style="text-decoration:none">Proxies</a></li>
 <li><a href="#lb" style="text-decoration:none">Load Balancers</a></li>
-<li><a href="#cs" style="text-decoration:none">Hashing</a></li>
-<li><a href="#cs" style="text-decoration:none">Relational Databases</a></li>
-<li><a href="#cs" style="text-decoration:none">Key-Value Stores</a></li>
-<li><a href="#cs" style="text-decoration:none">Specialized Storage Paradigms</a></li>
+<li><a href="#hash" style="text-decoration:none">Hashing</a></li>
+<li><a href="#db" style="text-decoration:none">Databases</a></li>
+<li><a href="#kvstore" style="text-decoration:none">Key-Value Stores</a></li>
+<li><a href="#ssp" style="text-decoration:none">Specialized Storage Paradigms</a></li>
 <li><a href="#cs" style="text-decoration:none">Replication And Sharding</a></li>
 <li><a href="#cs" style="text-decoration:none">Leader Election</a></li>
 <li><a href="#cs" style="text-decoration:none">Peer-To-Peer Networks</a></li>
@@ -385,7 +385,7 @@ SLAs are taken very serious. And if the service provider fail to do so, they hav
 When designing systems, you're gonna have to ask yourself: "What parts of my system are absolutely critical?" Well, not necessarily critical but are critical to the point that they require high availability. And what parts of my systems don't actually require high availability? What parts of my systems would be okay to fail? That's gonna be something that you'll have to think about.<br>
 <b>Eg:-</b> For payments(stripe), we need high availability.<br><br><br>
 <h2>How do you improve Availability?</h2>
-Make sure that your system doesn't have <b>single points of failure</b>: Single places in your system that if they fail cause your entire system to fail. <br><br>
+Distributed systems became mainstream with large-scale applications solely because, in them, we can eliminate the   <b>single points of failure</b>: Single places in your system that if they fail cause your entire system to fail. <br><br>
 And how do you eliminate single points of failure? Answer is Redundancy. Redundancy is basically the act of duplicating or triplicating or multiplying even more certain parts of your system.<br>
 Eg:- multiple servers, multiple load balancers etc...<br><br><br>
 <h3>Passive Redundancy</h3>
@@ -393,8 +393,9 @@ When you have multiple components at a given layer in your system. And if at any
 The other components are basically gonna be able to continue running smoothly with the increased load.<br>
 <b>Eg</b>:- Engines of an aeroplane<br><br>
 <h3>Active Redundancy</h3>
-When you have multiple machines that work together in such a way that only one or few of the machines are gonna be typically handling traffic or doing work. And if one of the ones that is handling traffic or doing work fails, the other machines are gonna somehow know that that other one failed and they're gonna take over.<br><br><br>
+When you have multiple machines that work together in such a way that only one or few of the machines are gonna be typically handling traffic or doing work. And if one of the ones that is handling traffic or doing work fails, the other machines are gonna somehow know that that other one failed and they're gonna take over.<br><br>
 <div align="center">18</div>
+Netflix uses Chaos Monkey, which is responsible for randomly terminating instances in production to ensure that engineers implement their services to be resilient to instance failures.<br><br>
 <h1>Key Terms</h1>
 <h2>AVAILABILITY</h2>
 The odds of a particular server or service being up and running at any point in time, usually measured in percentages. A server that has 99% availability will be operational 99% of the time (this would be described as having two nines of availability).
@@ -413,24 +414,29 @@ The process of replicating parts of a system in an effort to make it more reliab
 Short for "service-level agreement", an SLA is a collection of guarantees given to a customer by a service provider. SLAs typically make guarantees on a system's availability, amongst other things. SLAs are made up of one or multiple SLOS.
 <h2>SLO</h2> 
 Short for "service-level objective", an SLO is a guarantee given to a customer by a service provider. SLOs typically make guarantees on a system's availability, amongst other things. SLOs constitute an SLA.
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 <div align="center">19</div>
 <h1 id="cache">Caching</h1>
 Caching is used in a lot of algorithms. The reason is to typically avoid redoing the same operations, especially computationally complex operations that might take a lot of time, multiple times. So caching is used to improve the time complexity of the algorithms, to speed up the algorithms. <br><br><br>
 And in the context of systems design, caching is actually pretty similar. To put it simply, caching is used to <b>speed up a system</b>. Caching is used to reduce or to improve the latency of a system.<br><br>
 - Caching is going to be a way to design a system in such a way that, if we were originally gonna be using types of operations or data transfers that take a lot of time, like for example, network requests, we're gonna design a system in such a way that we don't have to do those network requests, and we can do different types of operations or different types of data transfers that are going to be faster. <br><br>
-- Caching is gonna be storing data in a location that's different from the one where the data originally is, such that it's faster to access this data from this new location.<br><br><br><br>
+- Caching is storing data in a location that's different from the one where the data originally is, such that it's faster to access this data from this new location.<br><br><br>
 
+<div align="center"><b>
+Caching is key to the performance of any kind of application.<br> It ensures low latency and high throughput.
+</b></div><br><br>
 <h2>Where can we use Caching ? </h2>
 Caching can be used at different places in a system. For instance, you can cache at the client level. So that the client caches some data such that it no longer has to go to the server to retrieve it. Similarly, you could cache at the server level. Maybe you need the client to always interact with the server, but maybe the server doesn't always need to go to the database to retrieve data. Maybe it only needs to go to the database once and we can have some form of cache here at the server level.<br><br>
 You could also have a cache in-between two components in a system. So maybe you could have a cache in-between a server and a database. In fact, you can even have caching at the hardware level. Now, perhaps this is less important in the context of Systems Design interviews, but it's still good to know about this. There is actually a lot of caching that happens at the hardware level in modern-day computers. For example, there's CPU caches, which are caches, as the name implies, that live at the CPU level, that basically make it faster to retrieve data from memory.<br><br>
 It is good to know that caching can occur, or occurs by default, at many different levels of a system.<br>
-<b>Note</b>:- Though caching is performed to speed up the slow operations, We can also use it incase of normal operations, not to spped them up individually but to avoid doing them multiple number of times because it might affect your system in other ways like increased load etc... <br><br><br><br>
+<br><br><br><br><br>
 <div align="center">20</div>
+<b>Note</b>:- Though caching is performed to speed up the slow operations, We can also use it incase of normal operations, not to spped them up individually but to avoid doing them multiple number of times because it might affect your system in other ways like increased load etc... <br><br>
 <h2>Editing cache data</h2>
 <h3>Write Through Cache</h3>
 A type of caching system where when you write a piece of data, your system will write that piece of data both in the cache and in the main source of truth (Database) at the same time, or rather in the same operation.<br> That way the <b>cache and the database are always in sync</b>.<br><br>
-Now the down side to this is that you end up having to still go to the database.<br><br>
+Now the down side to this is that you end up having to still go to the database.<br>
+So, a little latency will be added.<br><br>
 <h3>Write Back Cache</h3>
 A type of caching system where when you write a piece of data, your system will write that piece of data in the cache only. <br>
 So now your <b>cache will actually be out of sync with your database</b>.<br><br>
@@ -441,13 +447,26 @@ One of the downsides here is that if something ever happens to your cache and yo
 Say we have a bunch of servers and every server has a cache inside it. If for an operation, the cache of the first server got updated but the cache of the other servers are not updated yet, then the clients dealing with the other servers will be dealing with the stale versions of data. That would not be good. <br><br>
 In this particular system (where staleness is considered), a solution would be to move our cache out of the servers and to put our cache, a single cache. Maybe this would be Redis. And all of the servers would hit the cache and we'd have this single source of truth for the caching mechanism.<br><br>
 Example where staleness of data is considered: Comments on a YouTube video<br>
-Example where staleness of data is not considered: Views on a YouTube video<br><br><br>
-Lastly,
-for immutable data, Caching is beautiful<br>
-for mutable data, things gonna get trickier<br><br><br><br><br><br><br><br>
+Example where staleness of data is not considered: Views on a YouTube video<br><br><br><br><br><br>
 <div align="center">21</div>
+Lastly,for immutable data, Caching is beautiful<br>
+for mutable data, things gonna get trickier<br><br><br>
 <h2>Eviction policy in Caching</h2>
-We do not have infinite space, so there is a limit for the amount of data stored in cache. To get rid of that data, we can use Least Recently Used policy (LRU), Least Frequently Used policy (LFU), Last in First out (LIFO), First in First out (FIFO), randomly etc..... depending on the usecase you are designing.<br><br><br><br>
+We do not have infinite space, so there is a limit for the amount of data stored in cache. To get rid of that data, we can use Least Recently Used policy (LRU), Least Frequently Used policy (LFU), Last in First out (LIFO), First in First out (FIFO), randomly etc..... depending on the usecase you are designing.<br><br><br>
+<h2>Caching dynamic data</h2>
+With caching, we can cache both the static and the dynamic data. Dynamic data changes more often and has an expiry time or a TTL (Time to live). After the TTL ends, the data is purged from the cache, and the newly updated data is stored in it. This process is known as cache invalidation.<br><br>
+Though the data TTL should be long enough to make effective use of caching, caching won’t help much if the data changes too often, for instance, the price of a stock, the score of a cricket or a baseball match.<br><br><br>
+<h2>Some important points about Caching</h2>
+- It should be implemented wisely. If not, it can cause data inconsistency issues.<br>
+- It can be used at any layer of the application, with any component and there are no ground rules as to where it can and cannot be applied.<br>
+- <b>Key-value data stores</b> are primarily used to implement caching in web applications.<br>
+- The most common usage of caching is database caching.<br>
+- It is also the core of the HTTP protocol. We can store user sessions in a cache.<br>
+
+<br><br><br><br>
+<b>What do a punching bag and a cache have in common?</b><br>
+They can both take a hit! <br><br><br><br><br><br><br><br><br><br><br>
+<div align="center">22</div>
 <h1>Key Terms</h1>
 <h2>CACHE</h2>
 A piece of hardware or software that stores data, typically meant to retrieve that data faster than otherwise.
@@ -455,14 +474,14 @@ Caches are often used to store responses to network requests as well as results 
 <h2>CACHE HIT</h2>
 When requested data is found in a cache.
 <h2>CACHE MISS</h2>
-When requested data could have been found in a cache but isn't. This is typically used to refer to a negative consequence of a system failure or of a poor design choice. For example:
+When requested data could have been found in a cache but isn't. <br>This is typically used to refer to a negative consequence of a system failure or of a poor design choice. For example:
 If a server goes down, our load balancer will have to forward requests to a new server, which will result in cache misses.
 <h2>CACHE EVICTION POLICY</h2>
 The policy by which values get evicted or removed from a cache. Popular cache eviction policies include LRU (least-recently used), FIFO (first in first out), and LFU (least-frequently used).
 <h2>CONTENT DELIVERY NETWORK</h2>
-A CDN is a third-party service that acts like a cache for your servers. Sometimes, web applications can be slow for users in a particular region if your servers are located only in another region. A CDN has servers all around the world, meaning that the latency to a CDN's servers will almost always be far better than the latency to your servers. A CDN's servers are often referred to as POPs (Points of Presence). Two of the most popular CDNs are Cloudflare and Google Cloud CDN.
-<br><br><br><br><br><br><br><br><br><br><br><br>
-<div align="center">22</div>
+A CDN is a third-party service that acts like a cache for your servers. Sometimes, web applications can be slow for users in a particular region if your servers are located only in another region. A CDN has servers all around the world, meaning that the latency to a CDN's servers will almost always be far better than the latency to your servers. A CDN's servers are often referred to as POPs (Points of Presence). Two of the most popular CDNs are Cloudflare and Google Cloud CDN.<br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div align="center">23</div>
 <h1 id="proxy">Proxies</h1>
 When people use the term proxy, they often mean forward proxy.<br><br>
 <h2>Forward Proxy</h2>
@@ -571,3 +590,192 @@ How a load balancer chooses servers when distributing traffic amongst multiple s
 <h2>HOT SPOT</h2>
 When distributing a workload across a set of servers, that workload might be spread unevenly. This can happen if your sharding key or your hashing function are suboptimal, or if your workload is naturally skewed: some servers will receive a lot more traffic than others, thus creating a "hot spot".<br><br><br><br><br><br><br><br><br><br>
 <br><br><br><div align="center">29</div>
+<h1 id="hash">Hashing</h1>
+Hashing is an action that you can perform to transform an arbitrary piece of data into a fixed size value, typically an integer value.<br><br><br>
+<h2>Where exactly does hashing come into play in a system?</h2>
+Well for that, we can look at a pretty simple example.<br>
+We've got a fairly simple system consisting of clients, 4 clients in this case C1, C2, C3, C4. These clients are going to be speaking with servers, four servers, A, B, C, and D. But there's gonna be a load balancer in the middle. So when the clients are gonna issue requests, these requests are first gonna go to the load balancer which is then gonna have to reroute them to the four servers.<br><br>
+When a load balancer has to redirect or reroute a request from a client to a server, it has to have some sort of server selection strategy (such as ramdom selection of servers, round robin approach etc.) to pick what server to reroute that request to. And while a lot of these server selection strategies are fine at face value, they can introduce some problems depending on your system. Let's assume, requests that are computationally expensive are gonna hit the servers and the servers have to perform very complex operations that take a long time to complete and so these requests are just so expensive.<br><br>
+One way to deal with these kinds of requests in a system is to use <b>Caching</b>. So one way to implement caching here would be to have every server store an in-memory cache where every request that goes through a server, the server first checks if that request's response has been cached. If it hasn't been, then it actually performs the operations and gets the response. But if it has been cached, then it skips the operations that it would otherwise have to do and then immediately returns the cache response. That would be a pretty reasonable way to design your system if you knew that these requests were gonna be very computationally expensive.<br><br>
+If you've designed your system in such a way that it relies heavily on in-memory caches in its servers, but your load balancer is rerouting requests from clients following a server selection strategy that doesn't guarantee that requests from a single client or the same requests will be rerouted to the same server every time, then your in-memory caching system is gonna fall apart as you're gonna miss a bunch of cache hits when your requests get routed to a server that doesn't have the responses cached.<br><br>
+And this is where hashing comes into play.
+<br><br><br><br><br><br><br><br><div align="center">30</div>
+With hashing, we can hash the requests that come in to the load balancer and then based on the hash, we can bucket the requests according to the position of the servers by performing a tiny bit of business logic.<br><br>
+<h3>Hashing function</h3>
+When you're dealing with a hashing function, it's important that it has <b>uniformity</b>. A good hashing function will evenly distribute your requests no matter how many.<br><br><br>
+In practice, you typically never write your own hashing function. You use a pre-made industry-grade hashing function. A few popular examples are the MD5 hashing algorithm or the SHA-1 hashing algorithm, the Bcrypt hashing function, and you can trust that these hashing functions have that uniformity about them.<br>
+So now we will be maximizing our chance of getting cache hits for a client's requests.<br><br><br>
+<h3>Are simple hashing functions solution for all ?</h3>
+Consider using a simple hashing function which does mod operation on the number of servers. Then problems arise when a server dies or when a new server gets added as we're gonna face a bunch of cache misses. All of our in-memory caches that we may have had in your system are no longer useful.<br><br>
+<b>How do we solve this problem?</b><br>
+Well, this is where consistent hashing and rendezvous hashing come into play.<br><br><br>
+<h2>Consistent Hashing</h2>
+In here, imagine that you have a big circle and that you've placed your servers on the circle in a sort of evenly distributed way. This circle is not an actual thing, it's more a concept that helps us visualize better.<br><br>
+<b>How exactly are we placing these servers on the circle?</b><br>
+By using a good hashing function and mapping each server to a point on the circle.<br>
+Position your clients on the circle also using a hashing function.<br><br>
+<b>How do you determine where requests or where clients are going to be routed to?</b><br>
+Well, you go to each client and from each client, you move in a clockwise direction and the first server that you encounter is gonna be the server that your load balancer is gonna reroute this client to, or this client's requests to.<br><br>
+<b>Note:-</b> the direction can be counter-clockwise too.
+<br><br><br><br><br><br><br><br><div align="center">31</div>
+<div align="center">
+<img src="https://raw.githubusercontent.com/saivault/dsanotes/main/store/che.png" height="300" width="450">
+</div>
+So as you can see, this is kind of uniformly distributed because we used these hashing functions to position our servers and our clients.<br><br>
+<h3>But what does this accomplish?</h3><br>
+1. <b>Well let's see what happens if one of our servers dies?</b><br>
+
+&nbsp;&nbsp;&nbsp;What if server 4 dies? Remember in the previous example with a simple hashing &nbsp;&nbsp;&nbsp;strategy, like we said, if a server died, we'd have to redo all of our <br>
+&nbsp;&nbsp;&nbsp;calculations. We would no longer be able to mod by let's say four if one of our 
+&nbsp;&nbsp;&nbsp;servers died, we would have to mod by three.<br>
+&nbsp;&nbsp;&nbsp;Here, if one of our servers dies, let's say server 4, we're gonna go back to our 
+&nbsp;&nbsp;&nbsp;clients, move in a clockwise direction, and find the closest servers. Server 5 
+&nbsp;&nbsp;&nbsp;will take care of the clients served by server 4.<br><br><br>
+2. <b>What happens if we add a new server?</b><br>
+
+&nbsp;&nbsp;&nbsp;We go through our clients, move clockwise.<br><br>
+So as you can see with this system, with this system of putting the servers and the clients on a circle and moving in a clockwise direction, what we accomplish is that if we ever add or remove a server, we actually <b>still maintain most of the previous mappings</b> or associations between clients and servers. Only a few of them change.<br><br>
+This is why consistent hashing is so powerful because basically, it maintains some level of consistency between hashes and their target buckets.
+<br><br><br><br><br><br><div align="center">32</div>
+What's also cool about consistent hashing is that with this circle concept, you can even more evenly distribute your traffic.<br><br>
+<h3>What if clients are hashed more to a particular region ?</h3>
+Maybe a lot of your clients/requests are gonna somehow get hashed in a section of the circle where one of the servers isn't present. Maybe most of your clients and requests are gonna appear on the right side of the circle. So what you can do is you can <b>pass all of your servers through multiple hashing functions and then place all of the hashes that you get for your servers on the circle</b> and so basically each server will have multiple places that are associated with it.
+So, a server, for example, 3 can be placed at multiple places in the circle.<br>
+<div align="center">
+<img src="https://raw.githubusercontent.com/saivault/dsanotes/main/store/che2.png" height="250" width="250" >
+</div>
+<h3>How to make one server more powerful than the others in here ?</h3>
+Imagine at the very beginning of the life of your system, you only had one server, server A, and when your system started to grow, you decided to scale it vertically by making your main server A more and more powerful. Eventually, you decided to scale horizontally by adding servers like B, C, D, and E. But they were all weaker, not as powerful at server A so now you're faced with a situation where you wanna evenly distribute your traffic amongst your servers, but you want A to get a little bit more of the load because it's a more powerful server and you still wanna use this consistent hashing strategy. <br><br>
+Well what you can do is you can <b>pass server A through more hashing functions than all the other servers</b> and so what ends up happening is server A will have more locations on the circle. So basically now, there's just a higher likelihood that any given client or request is gonna bump into A when you move clockwise from it. <br><br><br>
+In the above figure, we can say servers 1 and 2 are more powerful than 3<br>
+So this is consistent hashing and it's very powerful.
+<br><br><br><br><br><div align="center">33</div>
+<h2>Rendezvous Hashing</h2>
+So imagine that you've got a bunch of usernames (Username 0, 1, 2, 3, 4, 5, 6, 7, 8, 9) and servers (Server 0, 1, 2, 3, 4, 5). So what the rendezvous hashing strategy is gonna do is for every username, it's going to calculate a score or rather a ranking of the servers. So in this case, it's gonna say hey, for username0, I'm gonna rank these six servers using some formula or some piece of logic, and I'm gonna pick the highest ranking server. Then for username1, I'm gonna do the exact same thing and so on.
+So let's say that username0 finds server0 as the highest ranking server for itself. That's the server that it's going to be associated with.<br><br><br>
+<h3>What if you remove a server ?</h3>
+If username0 had server0 as its highest ranking server, removing server5 isn't gonna do anything and username0 is still gonna map to server0. On the other hand, let's say that username2 mapped to server5 and then you remove server5, then that means that you will naturally have to change the mapping of username2 and you will just take the second highest ranking server.<br><br>
+<h3>What if you add a server ?</h3>
+The new server's gonna be ranked first for some clients. And only for those clients, there will be one cache miss. And no change is gonna happen for other clients.<br><br><br>
+So that's how rendezvous hashing works in a nutshell.<br>
+And so as you can see, just like with consistent hashing, we maintain <b>some consistency in these mappings</b> / associations. Both of those are fairly interchangeable, they both accomplish kind of the same thing. But the naive hashing strategy, the one where you just mod the hashes by the number of servers is certainly not as good.<br><br>
+And if your system is gonna be relying on something like in-memory caching, you're definitely gonna wanna be able to bring up these hashing strategies.<br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><div align="center">34</div>
+<h1>Key Terms</h1>
+<h2>Consistent Hashing</h2>
+A type of hashing that minimizes the number of keys that need to be remapped when a hash table gets resized. It's often used by load balancers to distribute traffic to servers; it minimizes the number of requests that get forwarded to different servers when new servers are added or when existing servers are brought down.
+<h2>SHA</h2>
+Short for "Secure Hash Algorithms", the SHA is a collection of cryptographic hash functions used in the industry. These days, SHA-3 is a popular choice to use in a system.
+<h2>Hashing Function</h2>
+A function that takes in a specific data type (such as a string or an identifier) and outputs a number. Different inputs may have same output. But a good hashing function attempts to minimize those hashing collisions (which is equivalent to maximizing uniformity).<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><div align="center">35</div>
+<h1 id="db">Databases</h1>
+Database is a collection of inter-related data which helps in efficient retrieval, insertion and deletion of data. The characteristic of a database that can categorise them mainly into two is the structure imposed on the data stored.<br><br>
+<h2>Relational Database</h2>
+A relational database is a type of database that imposes a <b>tabular like structure</b> on the data stored in it.<br>
+<b>Example</b>:- MySQL <br>
+<div align="center">
+Tables ~ Relations<br>
+Rows   ~ Records<br>
+Columns ~ Attributes<br>
+<img src="https://raw.githubusercontent.com/saivault/dsanotes/main/store/dbtableeg.png" height="200" width="400">
+</div><br>
+Every column of the database row has some pre-defined rules for the data that is meant to be persisted in it. With structured data, we know what we are dealing with. Since the <i>name</i> is strictly of string type, we can run string operations on it without worrying about errors or exceptions.<br><br>
+Relational databases also ensure <b>saving data in a normalized fashion</b>. In very simple terms, normalized data means an entity occurs in only one place/table in its simplest and atomic form and is not spread throughout the database. This helps maintain consistency in the data. <br><br>
+<h2>Non-Relational Database</h2>
+Non relational databases are databases that don't impose a tabular like structure on the data stored in them.<br>
+<b>Example</b>:- MongoDB, Redis, Neo4J, Cassandra, Memcache, etc.
+<br><br><br><br><br><br><br><div align="center">36</div>
+<h2>Querying Ability</h2>
+Since the data is structured in a relational database, it is typically managed by a query language such as <b>SQL (Structured query language)</b>. SQL is used to perform complex queries in relational databases. So relational databases are often used interchangeably with SQL databases and non-relational databases are often used interchangeably with non-SQL databases.<br><br>
+Relational databases are preferred over non-relational databases because of their querying abilities.<br><br><br>
+<h3>Why to use SQL for querying ?</h3>
+Why not Javascript / Python ?
+Because they involve loading the data in memory at the start. When we have terrabytes (TB's) of data, doing that will be non-trivial.<br>
+SQL allows you to perform queries directly in the database without having to load the data in memory.<br><br><br><br>
+A <b>transaction</b> is a single logical unit of work which accesses and possibly modifies the contents of a database.<br><br>
+<h2>ACID</h2>
+Relational databases also ensure ACID transactions. <br>
+<h3>Atomicity</h3>
+Atomicity guarantees that each transaction is treated as a single "unit", which either succeeds completely, or fails completely: if any of the statements constituting a transaction fails to complete, the entire transaction gets aborted and the database is left unchanged.
+<h3>Consistency</h3>
+A database is initially in a consistent state, and it should remain consistent after every transaction.
+<h3>Isolation</h3>
+Transactions are often executed concurrently. Isolation ensures that concurrent execution of transactions leaves the database in the same state that would have been obtained if the transactions were executed sequentially. 
+<h3>Durability</h3>
+The changes made by a committed transaction are permanent.
+<br><br><br><br><br><br><br><br><div align="center">37</div>
+<h2>Need for NoSQL databases</h2>
+One big limitation with SQL-based relational databases is <b>scalability</b>. Scaling relational databases is not trivial. They have to be sharded, replicated to make them run smoothly. This requires careful planning, human intervention and a skillset. On the contrary, NoSQL databases can add new server nodes on the fly and scale without any human intervention.<br><br>
+Today’s websites need fast read-writes. There are billions of users connected with each other on social networks. A massive amount of data is generated every micro second, and we need an infrastructure designed to manage this exponential growth.<br><br><br>
+NoSQL databases had to <b>sacrifice strong consistency, ACID transactions</b>, and much more to scale horizontally over a cluster and across the data centers. <br><br>
+1. Since the data is not normalized, an entity, since spread throughout the database, has to be updated at all places.
+Failing to update at all places makes the data inconsistent. <br>
+2.  ACID transactions in these databases are limited to a certain entity hierarchy or a small deployment region (not at global level) where they can lock down nodes to update them.<br><br>
+
+The data with NoSQL databases is more <b>eventually consistent as opposed to being strongly consistent</b>. When a large application is deployed on hundreds of servers spread across the globe, the geographically distributed nodes take some time to reach a global consensus.<br>
+Until they reach a consensus, the value of the entity is inconsistent. The value of the entity eventually becomes consistent after a short while. This is what eventual consistency is.<br><br>
+<h2>Learning curve not so steep and schemaless</h2>
+The learning curve of NoSQL databases is less steep than that of relational databases. When working with relational databases, a big chunk of our time goes into learning to design well-normalized tables, setting up relationships, trying to minimize joins, and so on.<br>
+Also, one needs to be pretty focused when designing the schema of a relational database to avoid running into issues in the future.<br><br>
+NoSql database entities have no relationships. Thus, there is a lot of flexibility, and you can do things your way.
+<br><br><br><br><br><br><br><br><br><div align="center">38</div>
+<h1 id="kvstore">Key Value Stores</h1>
+Sometimes, the tabular structure imposed by a relational database is actually more cumbersome than usual. Then you might prefer a non-relational database.<br><br>
+One of the most popular types of <b>non-relational database</b> is a key value store. It is a type of database that allows you to store data in a "key-value" format. The key serves as a unique identifier and has a value associated with it. The value can be as simple as a string(most often) and as complex as an object graph.<br><br>
+You can think of key-value store as a hash table.<br><br>
+Some of the popular key-value data stores used in the industry are <b>Redis</b>, Hazelcast, Riak, Voldemort, Memcached.<br>
+Microsoft, Citrix uses redis.<br>
+Google cloud uses memcached.<br><br><br>
+<h2>Features</h2>
+1. There's arguably no <b>simpler</b> type of storage atleast from a conceptual point of view than a key-value type of mapping.<br>
+2. They are <b>flexible</b> as there is no structure imposed on them. <br>
+3. We are accessing the values directly through keys in constant time O(1). There is no query language required to fetch the data. It’s just a simple no-brainer fetch operation. This ensures <b>minimum latency</b>.<br><br><br>
+
+<h2>Use cases</h2> 
+1. Due to the minimum latency they ensure, the primary use case for these databases is <b>caching</b> application data.<br>
+2. Dynamic configuration: special parameters/constants in your system that different parts of your system can rely on.<br><br><br>
+
+Different key value stores behave differently. Some are in-memory, some are not. Some might give you strong consistency, others might only give you eventual consistency.
+<br><br><br><br><br><br><br><br><br><br><br><br><div align="center">40</div>
+<h1>Key Terms</h1>
+<h2>Key-Value Store </h2>
+A Key-Value Store is a flexible NoSQL database that's often used for caching and dynamic configuration. Popular options include Redis, Amazon DynamoDB and Etcd
+<h2>Etcd</h2>
+Etcd is a strongly consistent and highly available key-value store that's often used to implement leader election in a system.
+<h2>Redis</h2> An in-memory key-value store. Does offer some persistent storage options but is typically used as a really fast, best-effort caching solution. Redis is also often used to implement rate limiting.
+<h2>Zookeeper</h2> Zookeeper is a strongly consistent, highly available key-value store. It's often used to store important configuration or to perform leader election.
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><div align="center">41</div>
+<h1 id="ssp">Specialized Storage Paradigms</h1>
+These cater to usecases that are actually fairly common.<br><br><br>
+<h2>1. Blob Store</h2>
+It is very common interms of usecases.<br>
+Blob stands for <b><i>Binary Large Object.</i></b><br><br>
+When someone is using the word 'blob', they are really referring to just some arbitrary piece of unstructured data.<br>
+Canonical examples are video file, image file, large text file etc...<br><br><br>
+The data contained inside a blob is unstructured and often times very large. Blob store specialises in storing <b>massive amounts of unstructured data</b> (millions of blobs). Most commonly used blob stores are Google cloud storage, Amazon S3, Microsoft Azure blob storage.<br><br>
+Blob stores are optimised for storing and retrieving massive amounts of unstructured data. So it's not very easy to implement and you almost always rely on popular solution.<br><br><br>
+<h3>Relation with key value stores</h3>
+They sort of behave like key value stores.<br>
+<div align="center">blob id/name --> blob</div>
+Blob stores function differently from key value stores which are not trained for storing massive amounts of data. Key value store is gonna be more optimised for latency rather than availability and durability.<br><br><br><br>
+<h2>2. Graph DB</h2>
+For storing a dataset where there are a lot of relationships within the data between individual data points. In such cases, tabular data might not make much sense as thr queries will get more and more complicated.<br>
+Example:- Neo4j<br><br>
+<br><br><br><br><br><br><br><br><div align="center">42</div>
+<h2>3. Time series DB</h2>
+A database specialised for storing time series data. These databases are less encountered as the time series data is even less likely to find. <br><br>
+Time series data is often used for monitoring purposes. <br>
+when we got large amounts of data that are of events happened at a given time(say every x ms) or when we have to perform very time series like computations like rolling averages, local maximas and minimas, aggregating data between two time periods, then we have to use a time series database.
+Some of the very popular usecases are monitoring and stock price data.<br><br>
+Two of the most popular time series databases are InfluxDB, prometheus.<br><br><br>
+<h2>4. Spatial DB</h2>
+Special type of database optimised for storing spatial data.<br><br>
+Spatial data is data that is concerned with geometric space. Canonical example is locations on a map. Some spatial queries are:<br>
+1. Finding all locations in the vicinity of a specific location<br>
+2. Finding the ditance between multiple locations.<br><br><br>
+
+A standard database index might not be optimised for this type of queries or computations. So spatial databases rely on spatial indices. Lots of spatial indices are based on trees. An example is a quad tree where every node has either 0 or 4 children nodes. Conceptually you can think of quad tree as a grid.<br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><div align="center">43</div>
+wd
